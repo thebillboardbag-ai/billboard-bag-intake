@@ -271,6 +271,63 @@
     margin-top: 24px;
     line-height: 1.5;
   }
+
+  .error-note {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(222,5,4,0.1);
+    border: 1px solid rgba(222,5,4,0.3);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--fg);
+  }
+
+  .error-note[hidden] { display: none !important; }
+
+  button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* Thank-you state */
+  .thanks {
+    text-align: center;
+    padding: 12px 0 4px;
+  }
+
+  .thanks-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: rgba(222,5,4,0.12);
+    border: 1px solid rgba(222,5,4,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .thanks-icon svg { width: 26px; height: 26px; }
+
+  .thanks h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 10px;
+  }
+
+  .thanks p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .thanks p + p { margin-top: 10px; }
+
+  [hidden] { display: none !important; }
 </style>
 </head>
 <body>
@@ -359,11 +416,25 @@
         </div>
       </div>
 
-      <button type="submit">Submit My Customization</button>
+      <button type="submit" id="submit-btn">Submit My Customization</button>
+
+      <p class="error-note" id="error-note" hidden>
+        Something didn't go through. Try again, or email your details straight to <strong>thebillboardbag@gmail.com</strong>.
+      </p>
     </form>
+
+    <div class="thanks" id="thanks-panel" hidden>
+      <div class="thanks-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 13l4 4L19 7" stroke="#de0504" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>You're In</h2>
+      <p>We've got your customization details. We'll test your link, get your visual sorted, and follow up at the email you gave us.</p>
+    </div>
   </div>
 
-  <p class="footer-note">Questions along the way go to thebillboardbag@gmail.com.</p>
+  <p class="footer-note" id="footer-note">Questions along the way go to thebillboardbag@gmail.com.</p>
 
 </div>
 
@@ -389,6 +460,37 @@
 
     ownRadio.addEventListener('change', sync);
     designRadio.addEventListener('change', sync);
+  })();
+
+  (function () {
+    var form = document.getElementById('customize-form');
+    var submitBtn = document.getElementById('submit-btn');
+    var errorNote = document.getElementById('error-note');
+    var thanksPanel = document.getElementById('thanks-panel');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      errorNote.hidden = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting…';
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      }).then(function (response) {
+        if (response.ok) {
+          form.hidden = true;
+          thanksPanel.hidden = false;
+        } else {
+          throw new Error('Submission failed');
+        }
+      }).catch(function () {
+        errorNote.hidden = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit My Customization';
+      });
+    });
   })();
 </script>
 
