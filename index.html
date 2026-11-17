@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Customize Your Billboard Bag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --panel: #141416;
+    --panel-border: #232326;
+    --fg: #f5f5f3;
+    --muted: #9a9a9e;
+    --accent: #de0504;
+    --accent-dim: #8a0303;
+    --field-bg: #1a1a1d;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 48px;
+    min-height: 100vh;
+  }
+
+  .wrap {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* Logo */
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 36px;
+    text-align: center;
+  }
+
+  .badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, var(--accent), var(--accent-dim));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(222,5,4,0.35);
+  }
+
+  .badge svg { width: 34px; height: 34px; }
+
+  .wordmark {
+    font-family: 'Anton', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .wordmark sup {
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    vertical-align: super;
+  }
+
+  .tagline {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .subline {
+    font-size: 12.5px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* Intro */
+  h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 8px;
+    text-wrap: balance;
+    text-align: center;
+  }
+
+  .sub {
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.5;
+    text-align: center;
+    margin: 0 0 32px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .field {
+    margin-bottom: 22px;
+  }
+
+  .field:last-of-type { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  label .req { color: var(--accent); }
+
+  .hint {
+    color: var(--muted);
+    font-size: 12.5px;
+    margin-top: 6px;
+    line-height: 1.45;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="url"],
+  textarea {
+    width: 100%;
+    background: var(--field-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 14.5px;
+    transition: border-color 0.15s ease;
+  }
+
+  textarea { resize: vertical; min-height: 92px; line-height: 1.5; }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  input::placeholder, textarea::placeholder { color: #5f5f63; }
+
+  /* Radio choice cards */
+  .choice-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    .choice-group { grid-template-columns: 1fr; }
+  }
+
+  .choice {
+    position: relative;
+  }
+
+  .choice input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .choice-card {
+    display: block;
+    border: 1px solid var(--panel-border);
+    background: var(--field-bg);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    height: 100%;
+  }
+
+  .choice-card .label-sub {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .choice input:checked + .choice-card {
+    border-color: var(--accent);
+    background: rgba(222,5,4,0.08);
+  }
+
+  .choice input:focus-visible + .choice-card {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .conditional {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 10px;
+    background: var(--field-bg);
+    border: 1px dashed var(--panel-border);
+  }
+
+  .conditional[hidden] { display: none !important; }
+
+  .own-visual-note {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: rgba(222,5,4,0.08);
+    border: 1px solid rgba(222,5,4,0.25);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--fg);
+  }
+
+  .own-visual-note[hidden] { display: none !important; }
+
+  .own-visual-note strong { color: var(--accent); }
+
+  button[type="submit"] {
+    width: 100%;
+    margin-top: 28px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+
+  button[type="submit"]:hover { background: #c40404; }
+  button[type="submit"]:active { transform: scale(0.99); }
+
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 24px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="badge">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 2h6.2C14.5 2 17 4.3 17 7.3c0 1.9-1 3.4-2.5 4.2C16.6 12.3 18 14 18 16.3 18 19.4 15.4 22 12 22H5V2Z" fill="#fff"/>
+        <path d="M9.1 5.6v4.6h2c1.5 0 2.5-.9 2.5-2.3 0-1.4-1-2.3-2.5-2.3h-2Zm0 8v4.8h2.4c1.7 0 2.8-1 2.8-2.4 0-1.4-1.1-2.4-2.8-2.4H9.1Z" fill="#de0504"/>
+      </svg>
+    </div>
+    <div class="wordmark">Billboard Bag<sup>&trade;</sup></div>
+    <div class="tagline">Become A Walking Billboard</div>
+    <div class="subline">The Bag That Gets You A Bag</div>
+  </div>
+
+  <h1>Customize Your Bag</h1>
+  <p class="sub">Tell us what to put on your display and your QR code, and we'll take it from there.</p>
+
+  <div class="card">
+    <form id="customize-form" action="https://formspree.io/f/myeweryy" method="POST">
+
+      <input type="hidden" name="_subject" value="New Billboard Bag Customization Request">
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+
+      <div class="field">
+        <label for="name">Full Name <span class="req">*</span></label>
+        <input type="text" id="name" name="Full Name" placeholder="Jordan Reese" required>
+      </div>
+
+      <div class="field">
+        <label for="email">Email <span class="req">*</span></label>
+        <input type="email" id="email" name="Email" placeholder="you@email.com" required>
+      </div>
+
+      <div class="field">
+        <label for="order">Order Number</label>
+        <input type="text" id="order" name="Order Number" placeholder="If you have it, helps us match this up">
+      </div>
+
+      <div class="field">
+        <label for="link">QR Code Link <span class="req">*</span></label>
+        <input type="url" id="link" name="QR Code Link" placeholder="https://instagram.com/yourhandle" required>
+        <p class="hint">Instagram, TikTok, SoundCloud, Spotify, Apple Music, your website, a Linktree, whatever you want people to land on when they scan your bag.</p>
+      </div>
+
+      <div class="field">
+        <label for="handle">Social Media Handle</label>
+        <input type="text" id="handle" name="Social Handle" placeholder="@yourhandle">
+        <p class="hint">Optional. If you want your handle shown on the display alongside the QR code.</p>
+      </div>
+
+      <div class="field">
+        <label for="wording">Custom Wording On The Bag</label>
+        <textarea id="wording" name="Custom Wording" placeholder="Want specific text on your display? Type it here."></textarea>
+        <p class="hint">Optional. Leave blank and we'll use one of our go-to lines: SCAN ME &middot; TAP IN &middot; SCAN FOR MORE &middot; SIGN UP HERE.</p>
+      </div>
+
+      <div class="field">
+        <label>Visual Source <span class="req">*</span></label>
+        <div class="choice-group" role="radiogroup" aria-label="Visual source">
+          <label class="choice">
+            <input type="radio" name="Visual Source" value="Client supplies the visual" id="src-own" required>
+            <span class="choice-card">I'll send my own visual
+              <span class="label-sub">Image or video, ready to load</span>
+            </span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="Visual Source" value="Design it for me" id="src-design" required>
+            <span class="choice-card">Design it for me
+              <span class="label-sub">Give us a few ideas</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="own-visual-note" id="own-visual-note" hidden>
+          Email your final file to <strong>thebillboardbag@gmail.com</strong> and reference your order number above. We'll confirm once we have it.
+        </div>
+
+        <div class="conditional" id="design-ideas-wrap" hidden>
+          <label for="ideas">Your Ideas <span class="req">*</span></label>
+          <textarea id="ideas" name="Design Ideas" placeholder="Give us 3 ideas for what you want on your bag's display. Be as specific as you can, colors, mood, text, footage you have in mind."></textarea>
+        </div>
+      </div>
+
+      <button type="submit">Submit My Customization</button>
+    </form>
+  </div>
+
+  <p class="footer-note">Questions along the way go to thebillboardbag@gmail.com.</p>
+
+</div>
+
+<script>
+  (function () {
+    var ownRadio = document.getElementById('src-own');
+    var designRadio = document.getElementById('src-design');
+    var note = document.getElementById('own-visual-note');
+    var ideasWrap = document.getElementById('design-ideas-wrap');
+    var ideasField = document.getElementById('ideas');
+
+    function sync() {
+      if (designRadio.checked) {
+        ideasWrap.hidden = false;
+        note.hidden = true;
+        ideasField.setAttribute('required', 'required');
+      } else if (ownRadio.checked) {
+        ideasWrap.hidden = true;
+        note.hidden = false;
+        ideasField.removeAttribute('required');
+      }
+    }
+
+    ownRadio.addEventListener('change', sync);
+    designRadio.addEventListener('change', sync);
+  })();
+</script>
+
+</body>
+</html>
