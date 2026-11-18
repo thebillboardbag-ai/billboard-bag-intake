@@ -363,8 +363,8 @@
       </div>
 
       <div class="field">
-        <label for="order">Order Number</label>
-        <input type="text" id="order" name="Order Number" placeholder="If you have it, helps us match this up">
+        <label for="order">Order Number <span class="req">*</span></label>
+        <input type="text" id="order" name="Order Number" placeholder="Enter it here" required>
       </div>
 
       <div class="field">
@@ -380,8 +380,8 @@
       </div>
 
       <div class="field">
-        <label for="wording">Custom Wording On The Bag</label>
-        <textarea id="wording" name="Custom Wording" placeholder="Want specific text on your display? Type it here."></textarea>
+        <label for="wording">Display Text</label>
+        <textarea id="wording" name="Custom Wording" placeholder="e.g. SCAN ME, TAP IN, or your own line"></textarea>
         <p class="hint">Optional. Leave blank and we'll use one of our go-to lines: SCAN ME &middot; TAP IN &middot; SCAN FOR MORE &middot; SIGN UP HERE.</p>
       </div>
 
@@ -395,8 +395,8 @@
             </span>
           </label>
           <label class="choice">
-            <input type="radio" name="Visual Source" value="Design it for me" id="src-design" required>
-            <span class="choice-card">Design it for me
+            <input type="radio" name="Visual Source" value="Personalize for you" id="src-design" required>
+            <span class="choice-card">Personalize for you
               <span class="label-sub">Give us a few ideas</span>
             </span>
           </label>
@@ -417,7 +417,7 @@
       <button type="submit" id="submit-btn">Submit My Customization</button>
 
       <p class="error-note" id="error-note" hidden>
-        Something didn't go through. Try again, or email your details straight to <strong>thebillboardbag@gmail.com</strong>.
+        Your submission didn't go through. Please try again, or email your details to <strong>thebillboardbag@gmail.com</strong>.
       </p>
     </form>
 
@@ -432,7 +432,7 @@
     </div>
   </div>
 
-  <p class="footer-note" id="footer-note">Questions along the way go to thebillboardbag@gmail.com.</p>
+  <p class="footer-note" id="footer-note">Questions? Email thebillboardbag@gmail.com.</p>
 
 </div>
 
