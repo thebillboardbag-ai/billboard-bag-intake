@@ -51,7 +51,22 @@
     text-align: center;
   }
 
+  .badge-wrap {
+    position: relative;
+    width: 64px;
+    height: 64px;
+  }
+
+  .chain-ring {
+    position: absolute;
+    inset: -13px;
+    width: 90px;
+    height: 90px;
+    pointer-events: none;
+  }
+
   .badge {
+    position: relative;
     width: 64px;
     height: 64px;
     border-radius: 14px;
@@ -335,8 +350,22 @@
 <div class="wrap">
 
   <div class="brand">
-    <div class="badge">
-      <img src="assets/logo-badge.png" alt="Billboard Bag">
+    <div class="badge-wrap">
+      <svg class="chain-ring" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FCEABB"/>
+            <stop offset="25%" stop-color="#C8960C"/>
+            <stop offset="50%" stop-color="#FFF6D7"/>
+            <stop offset="75%" stop-color="#9A6A08"/>
+            <stop offset="100%" stop-color="#FCEABB"/>
+          </linearGradient>
+        </defs>
+        <rect x="4" y="4" width="82" height="82" rx="23" ry="23" fill="none" stroke="url(#goldGrad)" stroke-width="7" stroke-linecap="round" stroke-dasharray="8 5.5"/>
+      </svg>
+      <div class="badge">
+        <img src="assets/logo-badge.png" alt="Billboard Bag">
+      </div>
     </div>
     <div class="wordmark">Billboard Bag<sup>&trade;</sup></div>
     <div class="tagline">Become A Walking Billboard</div>
