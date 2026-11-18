@@ -160,6 +160,7 @@
   input[type="text"],
   input[type="email"],
   input[type="url"],
+  select,
   textarea {
     width: 100%;
     background: var(--field-bg);
@@ -172,14 +173,33 @@
     transition: border-color 0.15s ease;
   }
 
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a9e' stroke-width='1.5' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
   textarea { resize: vertical; min-height: 92px; line-height: 1.5; }
 
-  input:focus, textarea:focus {
+  input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--accent);
   }
 
   input::placeholder, textarea::placeholder { color: #5f5f63; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
 
   /* Radio choice cards */
   .choice-group {
@@ -403,9 +423,23 @@
       </div>
 
       <div class="field">
-        <label for="handle">Social Media Link</label>
-        <input type="url" id="handle" name="Social Media Link" placeholder="https://yourlink.com">
-        <p class="hint">Optional. The full link to your profile, shown on the display alongside the QR code so there's no confusion about which platform it is.</p>
+        <label for="handle">Your Social Media Handle</label>
+        <div class="field-row">
+          <select id="platform" name="Social Media Platform">
+            <option value="" disabled selected>Platform</option>
+            <option value="Instagram">Instagram</option>
+            <option value="TikTok">TikTok</option>
+            <option value="YouTube">YouTube</option>
+            <option value="X (Twitter)">X (Twitter)</option>
+            <option value="Snapchat">Snapchat</option>
+            <option value="Facebook">Facebook</option>
+            <option value="SoundCloud">SoundCloud</option>
+            <option value="Spotify">Spotify</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="text" id="handle" name="Social Media Handle" placeholder="@yourhandle">
+        </div>
+        <p class="hint">Optional. Shown on the display next to your QR code so there's no confusion about which platform it is. Use @ for platforms that require it, like TikTok or YouTube.</p>
       </div>
 
       <div class="field">
