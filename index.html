@@ -157,6 +157,20 @@
     line-height: 1.45;
   }
 
+  .field-error {
+    color: var(--accent);
+    font-size: 12.5px;
+    margin-top: 6px;
+    line-height: 1.45;
+    font-weight: 600;
+  }
+
+  .field-error[hidden] { display: none !important; }
+
+  #handle.invalid {
+    border-color: var(--accent);
+  }
+
   input[type="text"],
   input[type="email"],
   input[type="url"],
@@ -440,6 +454,9 @@
           <input type="text" id="handle" name="Social Media Handle" placeholder="@yourhandle">
         </div>
         <p class="hint">Optional. Shown on the display next to your QR code so there's no confusion about which platform it is. Use @ for platforms that require it, like TikTok or YouTube.</p>
+        <p class="hint" id="handle-preview" hidden></p>
+        <p class="field-error" id="handle-error" hidden>Add the @ before your handle, e.g. @daedreams.</p>
+        <input type="hidden" id="social-full-link" name="Social Media Full Link" value="">
       </div>
 
       <div class="field">
@@ -521,6 +538,66 @@
 
     ownRadio.addEventListener('change', sync);
     designRadio.addEventListener('change', sync);
+  })();
+
+  (function () {
+    var platformSelect = document.getElementById('platform');
+    var handleInput = document.getElementById('handle');
+    var handlePreview = document.getElementById('handle-preview');
+    var handleError = document.getElementById('handle-error');
+    var fullLinkField = document.getElementById('social-full-link');
+
+    var AT_REQUIRED = ['TikTok', 'YouTube'];
+
+    function buildLink(platform, rawHandle) {
+      var handle = (rawHandle || '').trim();
+      if (!handle) return '';
+      var bare = handle.replace(/^@/, '');
+      switch (platform) {
+        case 'TikTok': return 'https://www.tiktok.com/@' + bare;
+        case 'YouTube': return 'https://www.youtube.com/@' + bare;
+        case 'Instagram': return 'https://www.instagram.com/' + bare;
+        case 'X (Twitter)': return 'https://x.com/' + bare;
+        case 'Snapchat': return 'https://www.snapchat.com/add/' + bare;
+        case 'Facebook': return 'https://www.facebook.com/' + bare;
+        case 'SoundCloud': return 'https://soundcloud.com/' + bare;
+        default: return handle;
+      }
+    }
+
+    function refresh() {
+      var platform = platformSelect.value;
+      var handle = handleInput.value.trim();
+      var needsAt = AT_REQUIRED.indexOf(platform) !== -1;
+      var isInvalid = needsAt && handle.length > 0 && handle.charAt(0) !== '@';
+
+      handleError.hidden = !isInvalid;
+      handleInput.classList.toggle('invalid', isInvalid);
+
+      var link = buildLink(platform, handle);
+      fullLinkField.value = isInvalid ? '' : link;
+
+      if (link && !isInvalid) {
+        handlePreview.textContent = link;
+        handlePreview.hidden = false;
+      } else {
+        handlePreview.hidden = true;
+      }
+
+      return !isInvalid;
+    }
+
+    platformSelect.addEventListener('change', refresh);
+    handleInput.addEventListener('input', refresh);
+    handleInput.addEventListener('blur', refresh);
+
+    document.getElementById('customize-form').addEventListener('submit', function (e) {
+      if (!refresh()) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        handleInput.focus();
+      }
+    }, true);
   })();
 
   (function () {
