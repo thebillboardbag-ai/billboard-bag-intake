@@ -439,51 +439,34 @@
       </div>
 
       <div class="field">
-        <label>Is This A Gift? <span class="req">*</span></label>
+        <label>Is This A Gift?</label>
         <div class="choice-group" role="radiogroup" aria-label="Is this a gift">
           <label class="choice">
-            <input type="radio" name="Is Gift" value="No" id="gift-no" required checked>
+            <input type="radio" name="Is Gift" value="No" id="gift-no" checked>
             <span class="choice-card">No, It's For Me</span>
           </label>
           <label class="choice">
-            <input type="radio" name="Is Gift" value="Yes" id="gift-yes" required>
+            <input type="radio" name="Is Gift" value="Yes" id="gift-yes">
             <span class="choice-card">Yes, It's A Gift</span>
           </label>
         </div>
+        <p class="hint">Recipient and shipping details are handled at checkout. This is just so we know.</p>
 
         <div class="conditional" id="gift-details" hidden>
-          <div class="field" style="margin-bottom:16px;">
-            <label for="recipient-name">Recipient's Name</label>
-            <input type="text" id="recipient-name" name="Recipient Name" placeholder="Who's it for?">
-          </div>
-          <div class="field" style="margin-bottom:16px;">
-            <label for="recipient-email">Recipient's Email <span class="req">*</span></label>
-            <input type="email" id="recipient-email" name="Recipient Email" placeholder="their@email.com">
-            <p class="hint">Used to send them reminders to finish customizing their bag, if you choose to let them pick.</p>
-          </div>
-
-          <label>How Should We Handle Customization? <span class="req">*</span></label>
-          <div class="choice-group choice-group-3" role="radiogroup" aria-label="Gift customization choice">
+          <label>Do You Need A Graphic On The Display? <span class="req">*</span></label>
+          <div class="choice-group" role="radiogroup" aria-label="Need a graphic">
             <label class="choice">
-              <input type="radio" name="Gift Customization Choice" value="Recipient decides later" id="gift-later">
-              <span class="choice-card">Let Them Decide
-                <span class="label-sub">We'll Remind Them</span>
-              </span>
+              <input type="radio" name="Needs Graphic" value="Yes" id="graphic-yes">
+              <span class="choice-card">Yes, Add One</span>
             </label>
             <label class="choice">
-              <input type="radio" name="Gift Customization Choice" value="Purchaser customizes now" id="gift-now">
-              <span class="choice-card">I'll Set It Up Now
-                <span class="label-sub">Fill It Out Below</span>
-              </span>
-            </label>
-            <label class="choice">
-              <input type="radio" name="Gift Customization Choice" value="BB designs it" id="gift-design">
-              <span class="choice-card">Design It For Me
-                <span class="label-sub">We'll Make It Gift-Worthy</span>
+              <input type="radio" name="Needs Graphic" value="No" id="graphic-no">
+              <span class="choice-card">No, Skip It
+                <span class="label-sub">They Can Decide Later</span>
               </span>
             </label>
           </div>
-          <p class="hint" id="gift-later-note" hidden style="margin-top:12px;">No QR link or visual needed from you. We'll email the recipient a link to set up their own display, plus a few reminders until they do. There won't be a visual in the Drive folder yet, that's expected for this order.</p>
+          <p class="hint" id="graphic-no-note" hidden style="margin-top:12px;">No QR link or visual needed, the bag ships without one. There won't be a visual in the Drive folder for this order, that's expected.</p>
         </div>
       </div>
 
@@ -607,12 +590,10 @@
     var giftNo = document.getElementById('gift-no');
     var giftYes = document.getElementById('gift-yes');
     var giftDetails = document.getElementById('gift-details');
-    var recipientEmail = document.getElementById('recipient-email');
 
-    var giftLater = document.getElementById('gift-later');
-    var giftNow = document.getElementById('gift-now');
-    var giftDesign = document.getElementById('gift-design');
-    var laterNote = document.getElementById('gift-later-note');
+    var graphicYes = document.getElementById('graphic-yes');
+    var graphicNo = document.getElementById('graphic-no');
+    var graphicNoNote = document.getElementById('graphic-no-note');
 
     var qrField = document.getElementById('field-qrlink');
     var handleField = document.getElementById('field-handle');
@@ -623,10 +604,6 @@
     var linkInput = document.getElementById('link');
     var srcOwn = document.getElementById('src-own');
     var srcDesign = document.getElementById('src-design');
-    var visualChoiceGroup = srcOwn.closest('.choice-group');
-    var ownNote = document.getElementById('own-visual-note');
-    var ideasWrap = document.getElementById('design-ideas-wrap');
-    var ideasField = document.getElementById('ideas');
 
     function setRequired(el, req) {
       if (!el) return;
@@ -639,58 +616,31 @@
       handleField.hidden = !show;
       wordingField.hidden = !show;
       blackcardField.hidden = !show;
+      visualSourceField.hidden = !show;
       setRequired(linkInput, show);
+      setRequired(srcOwn, show);
+      setRequired(srcDesign, show);
     }
 
     function syncGift() {
       var isGift = giftYes.checked;
       giftDetails.hidden = !isGift;
-      setRequired(recipientEmail, isGift);
 
       if (!isGift) {
         showContentFields(true);
-        visualSourceField.hidden = false;
-        visualChoiceGroup.hidden = false;
-        setRequired(srcOwn, true);
-        setRequired(srcDesign, true);
-        laterNote.hidden = true;
+        graphicNoNote.hidden = true;
         return;
       }
 
-      var choice = giftLater.checked ? 'later' : giftNow.checked ? 'now' : giftDesign.checked ? 'design' : null;
-
-      if (choice === 'now') {
-        showContentFields(true);
-        visualSourceField.hidden = false;
-        visualChoiceGroup.hidden = false;
-        setRequired(srcOwn, true);
-        setRequired(srcDesign, true);
-        laterNote.hidden = true;
-      } else if (choice === 'design') {
-        showContentFields(false);
-        setRequired(srcOwn, false);
-        setRequired(srcDesign, false);
-        visualSourceField.hidden = false;
-        visualChoiceGroup.hidden = true;
-        srcDesign.checked = true;
-        ownNote.hidden = true;
-        ideasWrap.hidden = false;
-        ideasField.setAttribute('required', 'required');
-        laterNote.hidden = true;
-      } else {
-        showContentFields(false);
-        setRequired(srcOwn, false);
-        setRequired(srcDesign, false);
-        visualSourceField.hidden = true;
-        laterNote.hidden = (choice !== 'later');
-      }
+      var skipGraphic = graphicNo.checked;
+      showContentFields(!skipGraphic);
+      graphicNoNote.hidden = !skipGraphic;
     }
 
     giftNo.addEventListener('change', syncGift);
     giftYes.addEventListener('change', syncGift);
-    giftLater.addEventListener('change', syncGift);
-    giftNow.addEventListener('change', syncGift);
-    giftDesign.addEventListener('change', syncGift);
+    graphicYes.addEventListener('change', syncGift);
+    graphicNo.addEventListener('change', syncGift);
     syncGift();
   })();
 
