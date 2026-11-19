@@ -226,6 +226,14 @@
     .choice-group { grid-template-columns: 1fr; }
   }
 
+  .choice-group-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  @media (max-width: 600px) {
+    .choice-group-3 { grid-template-columns: 1fr; }
+  }
+
   .choice {
     position: relative;
   }
@@ -431,12 +439,61 @@
       </div>
 
       <div class="field">
+        <label>Is This A Gift? <span class="req">*</span></label>
+        <div class="choice-group" role="radiogroup" aria-label="Is this a gift">
+          <label class="choice">
+            <input type="radio" name="Is Gift" value="No" id="gift-no" required checked>
+            <span class="choice-card">No, It's For Me</span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="Is Gift" value="Yes" id="gift-yes" required>
+            <span class="choice-card">Yes, It's A Gift</span>
+          </label>
+        </div>
+
+        <div class="conditional" id="gift-details" hidden>
+          <div class="field" style="margin-bottom:16px;">
+            <label for="recipient-name">Recipient's Name</label>
+            <input type="text" id="recipient-name" name="Recipient Name" placeholder="Who's it for?">
+          </div>
+          <div class="field" style="margin-bottom:16px;">
+            <label for="recipient-email">Recipient's Email <span class="req">*</span></label>
+            <input type="email" id="recipient-email" name="Recipient Email" placeholder="their@email.com">
+            <p class="hint">Used to send them reminders to finish customizing their bag, if you choose to let them pick.</p>
+          </div>
+
+          <label>How Should We Handle Customization? <span class="req">*</span></label>
+          <div class="choice-group choice-group-3" role="radiogroup" aria-label="Gift customization choice">
+            <label class="choice">
+              <input type="radio" name="Gift Customization Choice" value="Recipient decides later" id="gift-later">
+              <span class="choice-card">Let Them Decide
+                <span class="label-sub">We'll Remind Them</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="Gift Customization Choice" value="Purchaser customizes now" id="gift-now">
+              <span class="choice-card">I'll Set It Up Now
+                <span class="label-sub">Fill It Out Below</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="Gift Customization Choice" value="BB designs it" id="gift-design">
+              <span class="choice-card">Design It For Me
+                <span class="label-sub">We'll Make It Gift-Worthy</span>
+              </span>
+            </label>
+          </div>
+          <p class="hint" id="gift-later-note" hidden style="margin-top:12px;">No QR link or visual needed from you. We'll email the recipient a link to set up their own display, plus a few reminders until they do. There won't be a visual in the Drive folder yet, that's expected for this order.</p>
+        </div>
+      </div>
+
+      <div class="field" id="field-qrlink">
         <label for="link">QR Code Link <span class="req">*</span></label>
         <input type="url" id="link" name="QR Code Link" placeholder="https://yourlink.com" required>
         <p class="hint">Destination for your QR code: Instagram, TikTok, SoundCloud, Spotify, Apple Music, Website, or Linktree.</p>
       </div>
 
-      <div class="field">
+      <div class="field" id="field-handle">
         <label for="handle">Your Social Media Handle</label>
         <div class="field-row">
           <select id="platform" name="Social Media Platform">
@@ -459,13 +516,19 @@
         <input type="hidden" id="social-full-link" name="Social Media Full Link" value="">
       </div>
 
-      <div class="field">
+      <div class="field" id="field-wording">
         <label for="wording">Display Text</label>
         <textarea id="wording" name="Custom Wording" placeholder="e.g. SCAN ME, TAP IN, or your own line"></textarea>
         <p class="hint">Optional. Leave blank and we'll use one of our go-to lines: SCAN ME &middot; TAP IN &middot; SCAN FOR MORE &middot; SIGN UP HERE.</p>
       </div>
 
-      <div class="field">
+      <div class="field" id="field-blackcard">
+        <label for="blackcard">Black Card Link</label>
+        <input type="url" id="blackcard" name="Black Card Link" placeholder="https://yourlink.com">
+        <p class="hint">Only if you ordered the Noir Luxe. It comes with a Black Card. Leave this blank and it'll link to the same place as your QR code above; fill it in only if the Black Card should go somewhere different. Skip this entirely if you didn't order Noir Luxe.</p>
+      </div>
+
+      <div class="field" id="field-visualsource">
         <label>Visual Source <span class="req">*</span></label>
         <div class="choice-group" role="radiogroup" aria-label="Visual source">
           <label class="choice">
@@ -538,6 +601,97 @@
 
     ownRadio.addEventListener('change', sync);
     designRadio.addEventListener('change', sync);
+  })();
+
+  (function () {
+    var giftNo = document.getElementById('gift-no');
+    var giftYes = document.getElementById('gift-yes');
+    var giftDetails = document.getElementById('gift-details');
+    var recipientEmail = document.getElementById('recipient-email');
+
+    var giftLater = document.getElementById('gift-later');
+    var giftNow = document.getElementById('gift-now');
+    var giftDesign = document.getElementById('gift-design');
+    var laterNote = document.getElementById('gift-later-note');
+
+    var qrField = document.getElementById('field-qrlink');
+    var handleField = document.getElementById('field-handle');
+    var wordingField = document.getElementById('field-wording');
+    var blackcardField = document.getElementById('field-blackcard');
+    var visualSourceField = document.getElementById('field-visualsource');
+
+    var linkInput = document.getElementById('link');
+    var srcOwn = document.getElementById('src-own');
+    var srcDesign = document.getElementById('src-design');
+    var visualChoiceGroup = srcOwn.closest('.choice-group');
+    var ownNote = document.getElementById('own-visual-note');
+    var ideasWrap = document.getElementById('design-ideas-wrap');
+    var ideasField = document.getElementById('ideas');
+
+    function setRequired(el, req) {
+      if (!el) return;
+      if (req) { el.setAttribute('required', 'required'); }
+      else { el.removeAttribute('required'); }
+    }
+
+    function showContentFields(show) {
+      qrField.hidden = !show;
+      handleField.hidden = !show;
+      wordingField.hidden = !show;
+      blackcardField.hidden = !show;
+      setRequired(linkInput, show);
+    }
+
+    function syncGift() {
+      var isGift = giftYes.checked;
+      giftDetails.hidden = !isGift;
+      setRequired(recipientEmail, isGift);
+
+      if (!isGift) {
+        showContentFields(true);
+        visualSourceField.hidden = false;
+        visualChoiceGroup.hidden = false;
+        setRequired(srcOwn, true);
+        setRequired(srcDesign, true);
+        laterNote.hidden = true;
+        return;
+      }
+
+      var choice = giftLater.checked ? 'later' : giftNow.checked ? 'now' : giftDesign.checked ? 'design' : null;
+
+      if (choice === 'now') {
+        showContentFields(true);
+        visualSourceField.hidden = false;
+        visualChoiceGroup.hidden = false;
+        setRequired(srcOwn, true);
+        setRequired(srcDesign, true);
+        laterNote.hidden = true;
+      } else if (choice === 'design') {
+        showContentFields(false);
+        setRequired(srcOwn, false);
+        setRequired(srcDesign, false);
+        visualSourceField.hidden = false;
+        visualChoiceGroup.hidden = true;
+        srcDesign.checked = true;
+        ownNote.hidden = true;
+        ideasWrap.hidden = false;
+        ideasField.setAttribute('required', 'required');
+        laterNote.hidden = true;
+      } else {
+        showContentFields(false);
+        setRequired(srcOwn, false);
+        setRequired(srcDesign, false);
+        visualSourceField.hidden = true;
+        laterNote.hidden = (choice !== 'later');
+      }
+    }
+
+    giftNo.addEventListener('change', syncGift);
+    giftYes.addEventListener('change', syncGift);
+    giftLater.addEventListener('change', syncGift);
+    giftNow.addEventListener('change', syncGift);
+    giftDesign.addEventListener('change', syncGift);
+    syncGift();
   })();
 
   (function () {
