@@ -492,9 +492,8 @@
           </select>
           <input type="text" id="handle" name="Social Media Handle" placeholder="@yourhandle">
         </div>
-        <p class="hint">Optional. We'll turn this into your profile link, so get the handle exactly right or it won't land on the correct page. Use @ for platforms that require it, like TikTok or YouTube.</p>
+        <p class="hint">Optional. We'll use the profile link entered.</p>
         <p class="hint" id="handle-preview" hidden></p>
-        <p class="field-error" id="handle-error" hidden>Add the @ before your handle, e.g. @daedreams.</p>
         <input type="hidden" id="social-full-link" name="Social Media Full Link" value="">
       </div>
 
@@ -647,10 +646,7 @@
     var platformSelect = document.getElementById('platform');
     var handleInput = document.getElementById('handle');
     var handlePreview = document.getElementById('handle-preview');
-    var handleError = document.getElementById('handle-error');
     var fullLinkField = document.getElementById('social-full-link');
-
-    var AT_REQUIRED = ['TikTok', 'YouTube'];
 
     function buildLink(platform, rawHandle) {
       var handle = (rawHandle || '').trim();
@@ -671,36 +667,20 @@
     function refresh() {
       var platform = platformSelect.value;
       var handle = handleInput.value.trim();
-      var needsAt = AT_REQUIRED.indexOf(platform) !== -1;
-      var isInvalid = needsAt && handle.length > 0 && handle.charAt(0) !== '@';
-
-      handleError.hidden = !isInvalid;
-      handleInput.classList.toggle('invalid', isInvalid);
-
       var link = buildLink(platform, handle);
-      fullLinkField.value = isInvalid ? '' : link;
+      fullLinkField.value = link;
 
-      if (link && !isInvalid) {
+      if (link) {
         handlePreview.textContent = link;
         handlePreview.hidden = false;
       } else {
         handlePreview.hidden = true;
       }
-
-      return !isInvalid;
     }
 
     platformSelect.addEventListener('change', refresh);
     handleInput.addEventListener('input', refresh);
     handleInput.addEventListener('blur', refresh);
-
-    document.getElementById('customize-form').addEventListener('submit', function (e) {
-      if (!refresh()) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        handleInput.focus();
-      }
-    }, true);
   })();
 
   (function () {
